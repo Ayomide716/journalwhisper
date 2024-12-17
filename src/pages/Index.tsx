@@ -1,8 +1,11 @@
 import { JournalEntry } from "@/components/JournalEntry";
 import { NewEntryButton } from "@/components/NewEntryButton";
+import { Navigation } from "@/components/Navigation";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   // Temporary mock data
@@ -22,22 +25,31 @@ const Index = () => {
   ];
 
   return (
-    <div className="container py-8 max-w-2xl animate-fadeIn">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-serif text-3xl font-bold text-journal-800">My Journal</h1>
-        <NewEntryButton />
-      </div>
-      
-      <div className="space-y-4">
-        {entries.map((entry) => (
-          <JournalEntry
-            key={entry.id}
-            {...entry}
-            onClick={() => navigate(`/entry/${entry.id}`)}
-          />
-        ))}
-      </div>
-    </div>
+    <>
+      <Navigation />
+      <main className="container max-w-2xl mx-auto px-4 pt-24 pb-8 animate-fadeIn">
+        <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold text-journal-800">Recent Entries</h1>
+          {isMobile ? null : <NewEntryButton />}
+        </div>
+        
+        <div className="space-y-4">
+          {entries.map((entry) => (
+            <JournalEntry
+              key={entry.id}
+              {...entry}
+              onClick={() => navigate(`/entry/${entry.id}`)}
+            />
+          ))}
+        </div>
+
+        {isMobile && (
+          <div className="fixed bottom-6 right-6">
+            <NewEntryButton />
+          </div>
+        )}
+      </main>
+    </>
   );
 };
 
