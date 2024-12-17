@@ -3,26 +3,18 @@ import { NewEntryButton } from "@/components/NewEntryButton";
 import { Navigation } from "@/components/Navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
+import { getEntries } from "@/lib/storage";
+import { useEffect, useState } from "react";
+import type { JournalEntryType } from "@/lib/storage";
 
 const Index = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const [entries, setEntries] = useState<JournalEntryType[]>([]);
 
-  // Temporary mock data
-  const entries = [
-    {
-      id: 1,
-      title: "A New Beginning",
-      content: "Today marks the start of my journaling journey. I've always wanted to keep a diary but never found the right moment. This app feels different - clean, simple, and inviting.",
-      date: new Date(),
-    },
-    {
-      id: 2,
-      title: "Reflections",
-      content: "Spent the morning walking through the park, watching the leaves dance in the wind. It's amazing how these quiet moments can bring such clarity.",
-      date: new Date(Date.now() - 86400000),
-    },
-  ];
+  useEffect(() => {
+    setEntries(getEntries());
+  }, []);
 
   return (
     <>
@@ -34,13 +26,19 @@ const Index = () => {
         </div>
         
         <div className="space-y-4">
-          {entries.map((entry) => (
-            <JournalEntry
-              key={entry.id}
-              {...entry}
-              onClick={() => navigate(`/entry/${entry.id}`)}
-            />
-          ))}
+          {entries.length === 0 ? (
+            <p className="text-center text-journal-600 py-8">No entries yet. Start writing your first entry!</p>
+          ) : (
+            entries.map((entry) => (
+              <JournalEntry
+                key={entry.id}
+                title={entry.title}
+                content={entry.content}
+                date={new Date(entry.date)}
+                onClick={() => navigate(`/entry/${entry.id}`)}
+              />
+            ))
+          )}
         </div>
 
         {isMobile && (

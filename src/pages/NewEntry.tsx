@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Navigation } from "@/components/Navigation";
+import { saveEntry } from "@/lib/storage";
 
 const NewEntry = () => {
   const navigate = useNavigate();
@@ -14,7 +15,13 @@ const NewEntry = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here we would normally save the entry
+    
+    saveEntry({
+      title,
+      content,
+      date: new Date().toISOString(),
+    });
+    
     toast.success("Entry saved successfully!");
     navigate("/");
   };
