@@ -12,8 +12,25 @@ const Index = () => {
   const navigate = useNavigate();
   const [entries, setEntries] = useState<JournalEntryType[]>([]);
 
+  // Add event listener for storage changes
   useEffect(() => {
-    setEntries(getEntries());
+    const handleStorageChange = () => {
+      setEntries(getEntries());
+    };
+
+    // Initial load
+    handleStorageChange();
+
+    // Listen for storage changes
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event listener for entry updates
+    window.addEventListener('entryUpdated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('entryUpdated', handleStorageChange);
+    };
   }, []);
 
   return (

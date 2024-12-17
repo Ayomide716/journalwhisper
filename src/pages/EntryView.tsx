@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { toast } from "sonner";
-import { getEntries, saveEntry, JournalEntryType } from "@/lib/storage";
+import { getEntries, JournalEntryType } from "@/lib/storage";
 
 const EntryView = () => {
   const { id } = useParams();
@@ -38,6 +38,10 @@ const EntryView = () => {
     );
     
     localStorage.setItem("journal_entries", JSON.stringify(updatedEntries));
+    
+    // Dispatch custom event to notify Index component
+    window.dispatchEvent(new Event('entryUpdated'));
+    
     toast.success("Entry updated successfully!");
     setIsEditing(false);
   };
