@@ -21,3 +21,12 @@ export const getEntries = (): JournalEntryType[] => {
   const entries = localStorage.getItem("journal_entries");
   return entries ? JSON.parse(entries) : [];
 };
+
+export const updateEntry = (id: string, updates: Partial<JournalEntryType>) => {
+  const entries = getEntries();
+  const updatedEntries = entries.map(entry =>
+    entry.id === id ? { ...entry, ...updates } : entry
+  );
+  localStorage.setItem("journal_entries", JSON.stringify(updatedEntries));
+  return updatedEntries.find(entry => entry.id === id);
+};
